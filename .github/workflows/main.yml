@@ -3,14 +3,17 @@ on: [push]
 jobs:
   macOS:
     name: Run macOS
-    runs-on: macos-latest
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [macOS-10.14, macOS-10.13]
     steps:
     - name: Create aktualizr bottle
       run: |
         brew tap advancedtelematic/otaconnect
         brew install --build-bottle aktualizr
-        brew bottle --json --no-rebuild aktualizr
-        brew bottle --merge --write --root-url "https://github.com/advancedtelematic/aktualizr/releases/download/2019.8/" ./aktualizr--2019.8.mojave.bottle.json
+        brew bottle --json --no-rebuild --root-url="https://github.com/advancedtelematic/aktualizr/releases/download/2019.8/" aktualizr
+        brew bottle --merge --write ./aktualizr--2019.8.mojave.bottle.json
         brew cat aktualizr > aktualizr.rb
         mkdir build
         mv aktualizr.rb aktualizr--2019.8.mojave* build/
