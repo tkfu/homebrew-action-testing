@@ -1,0 +1,9 @@
+name: Main workflow
+on: [push]
+jobs:
+  macOS:
+    name: Run macOS
+    runs-on: macos-latest
+    steps:
+      - name: Check for homebrew
+        run: brew tap advancedtelematic/otaconnect
