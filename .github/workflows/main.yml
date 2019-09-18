@@ -1,7 +1,8 @@
 name: Main workflow
 on:
-  tags:
-    - 20[1-2][0-9].[1-9]*
+  push:
+    tags:
+      - 20[1-2][0-9].[1-9]*
 jobs:
   macOS:
     name: Run macOS
