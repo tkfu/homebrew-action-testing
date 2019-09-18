@@ -1,5 +1,7 @@
 name: Main workflow
-on: [push]
+on:
+  tags:
+    - 20[1-2][0-9].[1-9]*
 jobs:
   macOS:
     name: Run macOS
@@ -8,17 +10,41 @@ jobs:
       matrix:
         os: [macOS-10.14, macOS-10.13]
     steps:
-    - name: Create aktualizr bottle
+    - name: Create aktualizr bottle from tag
       run: |
-        brew tap advancedtelematic/otaconnect
-        brew install --build-bottle aktualizr
-        brew bottle --json --no-rebuild --root-url="https://github.com/advancedtelematic/aktualizr/releases/download/2019.8/" aktualizr
-        brew bottle --merge --write ./aktualizr--2019.8.mojave.bottle.json
+        curl -O https://raw.githubusercontent.com/advancedtelematic/homebrew-otaconnect/master/aktualizr.rb
+        echo $GITHUB_REF
+        sed -i '' -E "s/  version \"2019.[0-9]+\"/  version \"${GITHUB_REF}\"/" aktualizr.rb
+        brew install --build-bottle ./aktualizr.rb
+        brew bottle --json --no-rebuild --force-core-tap --root-url="https://github.com/advancedtelematic/aktualizr/releases/download/${GITHUB_REF}/" aktualizr
+        brew bottle --merge --write --no-commit ./aktualizr--${GITHUB_REF}.mojave.bottle.json
         brew cat aktualizr > aktualizr.rb
-        mkdir build
-        mv aktualizr.rb aktualizr--2019.8.mojave* build/
-    - name: Upload build artifacts
+        mv aktualizr--${GITHUB_REF}.mojave.bottle.tar.gz aktualizr-${GITHUB_REF}.mojave.bottle.tar.gz
+    - name: Upload bottle
       uses: actions/upload-artifact@master
       with:
-        name: aktualizr-bottle-files
+        name: aktualizr-bottle
         path: build
+
+
+  # macOS:
+  #   name: Run macOS
+  #   runs-on: ${{ matrix.os }}
+  #   strategy:
+  #     matrix:
+  #       os: [macOS-10.14, macOS-10.13]
+  #   steps:
+  #   - name: Create aktualizr bottle
+  #     run: |
+  #       brew tap advancedtelematic/otaconnect
+  #       brew install --build-bottle aktualizr
+  #       brew bottle --json --no-rebuild --force-core-tap --root-url="https://github.com/advancedtelematic/aktualizr/releases/download/2019.8/" aktualizr
+  #       brew bottle --merge --write --no-commit ./aktualizr--2019.8.mojave.bottle.json
+  #       brew cat aktualizr > aktualizr.rb
+  #       mkdir build
+  #       mv aktualizr.rb aktualizr--2019.8.mojave* build/
+  #   - name: Upload build artifacts
+  #     uses: actions/upload-artifact@master
+  #     with:
+  #       name: aktualizr-bottle-files
+  #       path: build
