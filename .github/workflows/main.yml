@@ -22,11 +22,16 @@ jobs:
         brew bottle --merge --write --no-commit ./aktualizr--${VERSION}.mojave.bottle.json
         brew cat aktualizr > aktualizr.rb
         mv aktualizr--${VERSION}.mojave.bottle.tar.gz aktualizr-${VERSION}.mojave.bottle.tar.gz
+    - name: Upload recipe
+      uses: actions/upload-artifact@master
+      with:
+        name: aktualizr-recipe
+        path: aktualizr.rb
     - name: Upload bottle
       uses: actions/upload-artifact@master
       with:
         name: aktualizr-bottle
-        path: build
+        path: aktualizr-*.mojave.bottle.tar.gz
 
 
   # macOS:
