@@ -14,13 +14,14 @@ jobs:
     - name: Create aktualizr bottle from tag
       run: |
         curl -O https://raw.githubusercontent.com/advancedtelematic/homebrew-otaconnect/master/aktualizr.rb
-        echo $GITHUB_REF
-        sed -i '' -E "s/  version \"2019.[0-9]+\"/  version \"${GITHUB_REF}\"/" aktualizr.rb
+        export VERSION=$(echo $GITHUB_REF | cut -d'/' -f3-)
+        echo $VERSION
+        sed -i '' -E "s/  version \"2019.[0-9]+\"/  version \"${VERSION}\"/" aktualizr.rb
         brew install --build-bottle ./aktualizr.rb
-        brew bottle --json --no-rebuild --force-core-tap --root-url="https://github.com/advancedtelematic/aktualizr/releases/download/${GITHUB_REF}/" aktualizr
-        brew bottle --merge --write --no-commit ./aktualizr--${GITHUB_REF}.mojave.bottle.json
+        brew bottle --json --no-rebuild --force-core-tap --root-url="https://github.com/advancedtelematic/aktualizr/releases/download/${VERSION}/" aktualizr
+        brew bottle --merge --write --no-commit ./aktualizr--${VERSION}.mojave.bottle.json
         brew cat aktualizr > aktualizr.rb
-        mv aktualizr--${GITHUB_REF}.mojave.bottle.tar.gz aktualizr-${GITHUB_REF}.mojave.bottle.tar.gz
+        mv aktualizr--${VERSION}.mojave.bottle.tar.gz aktualizr-${VERSION}.mojave.bottle.tar.gz
     - name: Upload bottle
       uses: actions/upload-artifact@master
       with:
