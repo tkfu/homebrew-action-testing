@@ -5,5 +5,9 @@ jobs:
     name: Run macOS
     runs-on: macos-latest
     steps:
-      - name: Check for homebrew
-        run: brew tap advancedtelematic/otaconnect
+    - name: Attempt to install aktualizr from bottle
+      run: |
+        brew tap advancedtelematic/otaconnect
+        brew install aktualizr
+    - name: Attempt to build aktualizr from source
+      run: brew reinstall --build-from-source aktualizr
