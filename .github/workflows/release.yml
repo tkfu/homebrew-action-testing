@@ -1,5 +1,7 @@
 name: Build bottle for homebrew release
-on: release
+on: 
+  release:
+    types: created
 jobs:
   macOS:
     name: Run macOS
