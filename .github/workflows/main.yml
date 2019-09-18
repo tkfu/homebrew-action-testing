@@ -15,24 +15,23 @@ jobs:
       run: |
         curl -O https://raw.githubusercontent.com/advancedtelematic/homebrew-otaconnect/master/aktualizr.rb
         export VERSION=$(echo $GITHUB_REF | cut -d'/' -f3-)
-        echo $VERSION
         sed -i '' -E "s/  version \"2019.[0-9]+\"/  version \"${VERSION}\"/" aktualizr.rb
         brew install --build-bottle ./aktualizr.rb
         brew bottle --json --no-rebuild --force-core-tap --root-url="https://github.com/advancedtelematic/aktualizr/releases/download/${VERSION}/" aktualizr
         brew bottle --merge --write --no-commit ./aktualizr--${VERSION}.mojave.bottle.json
         brew cat aktualizr > aktualizr.rb
         mv aktualizr--${VERSION}.mojave.bottle.tar.gz aktualizr-${VERSION}.mojave.bottle.tar.gz
+    - name: Upload bottle to github release page
+      run: |
+        export VERSION=$(echo $GITHUB_REF | cut -d'/' -f3-)
+        export FILENAME=aktualizr-${VERSION}.mojave.bottle.tar.gz
+        export UPLOAD_URL="https://uploads.github.com/repos/tkfu/homebrew-action-testing/releases/${VERSION}/assets?name=${FILENAME}&access_token=$GH_ACCESS_TOKEN"
+        curl --data-binary @"${FILENAME}" -H "Content-Type: application/octet-stream" "$UPLOAD_URL"
     - name: Upload recipe
       uses: actions/upload-artifact@master
       with:
         name: aktualizr-recipe
         path: aktualizr.rb
-    - name: Upload bottle
-      uses: actions/upload-artifact@master
-      with:
-        name: aktualizr-bottle
-        path: aktualizr-*.mojave.bottle.tar.gz
-
 
   # macOS:
   #   name: Run macOS
