@@ -5,9 +5,17 @@ jobs:
     name: Run macOS
     runs-on: macos-latest
     steps:
-    - name: Attempt to install aktualizr from bottle
+    - name: Create aktualizr bottle
       run: |
         brew tap advancedtelematic/otaconnect
-        brew install aktualizr
-    - name: Attempt to build aktualizr from source
-      run: brew reinstall --build-from-source aktualizr
+        brew install --build-bottle aktualizr
+        brew bottle --json --no-rebuild aktualizr
+        brew bottle --merge --write --root-url "https://github.com/advancedtelematic/aktualizr/releases/download/2019.8/" ./aktualizr--2019.8.mojave.bottle.json
+        brew cat aktualizr > aktualizr.rb
+        mkdir build
+        mv aktualizr.rb aktualizr--2019.8.mojave* build/
+    - name: Upload build artifacts
+      uses: actions/upload-artifact@master
+      with:
+        name: aktualizr-bottle-files
+        path: build
