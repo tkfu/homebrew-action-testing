@@ -14,7 +14,7 @@ jobs:
     - name: Create aktualizr bottle from tag
       run: |
         curl -O https://raw.githubusercontent.com/advancedtelematic/homebrew-otaconnect/master/aktualizr.rb
-        export VERSION=$(echo $GITHUB_REF | cut -d'/' -f3-)
+        export VERSION=$(basename $GITHUB_REF)
         sed -i '' -E "s/  version \"2019.[0-9]+\"/  version \"${VERSION}\"/" aktualizr.rb
         brew install --build-bottle ./aktualizr.rb
         brew bottle --json --no-rebuild --force-core-tap --root-url="https://github.com/advancedtelematic/aktualizr/releases/download/${VERSION}/" aktualizr
