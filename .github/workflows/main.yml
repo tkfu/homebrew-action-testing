@@ -1,5 +1,7 @@
 name: Build bottle for homebrew release
-on: [""]
+on: 
+  release:
+    types: created
 jobs:
   macOS:
     name: Upload a file to release

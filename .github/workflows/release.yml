@@ -1,14 +1,9 @@
 name: Build bottle for homebrew release
-on: 
-  release:
-    types: created
+on: [""]
 jobs:
   macOS:
     name: Run macOS
-    runs-on: ${{ matrix.os }}
-    strategy:
-      matrix:
-        os: [macOS-10.14, macOS-10.13]
+    runs-on: macOS-10.14
     steps:
     - name: Create aktualizr bottle from tag
       run: |
