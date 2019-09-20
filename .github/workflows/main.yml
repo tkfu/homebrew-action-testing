@@ -1,4 +1,4 @@
-name: Build bottle for homebrew release
+name: Release upload test 3
 on: 
   release:
     types: [created]
