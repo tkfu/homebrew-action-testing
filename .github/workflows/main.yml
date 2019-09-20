@@ -5,7 +5,7 @@ on:
 jobs:
   macOS:
     name: Upload a file to release
-    runs-on: ${{ matrix.os }}
+    runs-on: macOS-10.14
     steps:
     - name: Create aktualizr bottle from tag
       run: echo dummy
