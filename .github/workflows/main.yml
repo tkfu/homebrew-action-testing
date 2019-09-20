@@ -1,4 +1,4 @@
-name: Release upload test 6
+name: Build macOS homebrew bottle for aktualizr release page
 on: 
   release:
     types: [created]
@@ -7,6 +7,10 @@ jobs:
     name: Upload a file to release
     runs-on: macOS-10.14
     steps:
+    - name: Check out known-working version of boost
+      run: |
+        BREW_GIT_DIR=$(brew --prefix)/Homebrew/Library/Taps/homebrew/homebrew-core
+        git -C "$BREW_GIT_DIR" checkout 5da5895add Formula/boost.rb && brew reinstall boost || true
     - name: Attempt to auto-update recipe and build bottle
       run: |
         curl -O https://raw.githubusercontent.com/advancedtelematic/homebrew-otaconnect/master/aktualizr.rb
@@ -39,61 +43,3 @@ jobs:
       with:
         name: aktualizr.rb
         path: aktualizr.rb
-        
-
-# name: Main workflow
-# on:
-#   push:
-#     tags:
-#       - 20[1-2][0-9].[1-9]*
-# jobs:
-#   macOS:
-#     name: Run macOS
-#     runs-on: ${{ matrix.os }}
-#     strategy:
-#       matrix:
-#         os: [macOS-10.14, macOS-10.13]
-#     steps:
-#     - name: Create aktualizr bottle from tag
-#       run: |
-#         curl -O https://raw.githubusercontent.com/advancedtelematic/homebrew-otaconnect/master/aktualizr.rb
-#         export VERSION=$(basename $GITHUB_REF)
-#         sed -i '' -E "s/  version \"2019.[0-9]+\"/  version \"${VERSION}\"/" aktualizr.rb
-#         brew install --build-bottle ./aktualizr.rb
-#         brew bottle --json --no-rebuild --force-core-tap --root-url="https://github.com/advancedtelematic/aktualizr/releases/download/${VERSION}/" aktualizr
-#         brew bottle --merge --write --no-commit ./aktualizr--${VERSION}.mojave.bottle.json
-#         brew cat aktualizr > aktualizr.rb
-#         mv aktualizr--${VERSION}.mojave.bottle.tar.gz aktualizr-${VERSION}.mojave.bottle.tar.gz
-#     - name: Upload bottle to github release page
-#       run: |
-#         export VERSION=$(echo $GITHUB_REF | cut -d'/' -f3-)
-#         export FILENAME=aktualizr-${VERSION}.mojave.bottle.tar.gz
-#         export UPLOAD_URL="https://uploads.github.com/repos/tkfu/homebrew-action-testing/releases/${VERSION}/assets?name=${FILENAME}&access_token=$GH_ACCESS_TOKEN"
-#         curl --data-binary @"${FILENAME}" -H "Content-Type: application/octet-stream" "$UPLOAD_URL"
-#     - name: Upload recipe
-#       uses: actions/upload-artifact@master
-#       with:
-#         name: aktualizr-recipe
-#         path: aktualizr.rb
-
-  # macOS:
-  #   name: Run macOS
-  #   runs-on: ${{ matrix.os }}
-  #   strategy:
-  #     matrix:
-  #       os: [macOS-10.14, macOS-10.13]
-  #   steps:
-  #   - name: Create aktualizr bottle
-  #     run: |
-  #       brew tap advancedtelematic/otaconnect
-  #       brew install --build-bottle aktualizr
-  #       brew bottle --json --no-rebuild --force-core-tap --root-url="https://github.com/advancedtelematic/aktualizr/releases/download/2019.8/" aktualizr
-  #       brew bottle --merge --write --no-commit ./aktualizr--2019.8.mojave.bottle.json
-  #       brew cat aktualizr > aktualizr.rb
-  #       mkdir build
-  #       mv aktualizr.rb aktualizr--2019.8.mojave* build/
-  #   - name: Upload build artifacts
-  #     uses: actions/upload-artifact@master
-  #     with:
-  #       name: aktualizr-bottle-files
-  #       path: build
