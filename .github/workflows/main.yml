@@ -35,7 +35,7 @@ jobs:
         AUTH_HEADER="Authorization: token ${GITHUB_TOKEN}"
         FILENAME=ota-${VERSION}.mojave.bottle.tar.gz
         UPLOAD_URL="https://uploads.github.com/repos/${GITHUB_REPOSITORY}/releases/${RELEASE_ID}/assets?name=${FILENAME}"
-        curl -sSL -H "${AUTH_HEADER}" -F "data=@${FILENAME}" "$UPLOAD_URL"
+        curl --data-binary @"$FILENAME" -H "${AUTH_HEADER}" -H "Content-Type: application/octet-stream" "$UPLOAD_URL"
     - name: Save recipe as build artifact
       uses: actions/upload-artifact@master
       with:
