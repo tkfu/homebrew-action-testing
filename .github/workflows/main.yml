@@ -23,9 +23,6 @@ jobs:
         echo "------------------------------------------------------------------------------------"
         brew cat ota | tee ota.rb
         echo "------------------------------------------------------------------------------------"
-        echo "orig sha: $(sha256sum ota--${VERSION}.mojave.bottle.tar.gz"
-        mv ota--${VERSION}.mojave.bottle.tar.gz ota-${VERSION}.mojave.bottle.tar.gz
-        echo "moved sha: $(sha256sum ota-${VERSION}.mojave.bottle.tar.gz"
     - name: Upload bottle to github release page
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
