@@ -1,4 +1,4 @@
-name: Release upload test 3
+name: Release upload test 5
 on: 
   release:
     types: [created]
@@ -23,12 +23,13 @@ jobs:
     - name: Upload bottle to github release page
       run: |
         VERSION=$(basename $GITHUB_REF)
+        echo "non export version: ${VERSION}"
         export VERSION=$(basename $GITHUB_REF)
         export RELEASE_ID=$(jq --raw-output '.release.id' $GITHUB_EVENT_PATH)
         export AUTH_HEADER="Authorization: token ${GITHUB_TOKEN}"
         export FILENAME=aktualizr-${VERSION}.mojave.bottle.tar.gz
         export UPLOAD_URL="https://uploads.github.com/repos/${GITHUB_REPOSITORY}/releases/${RELEASE_ID}/assets?name=${FILENAME}"
-        echo "version = ${VERSION} release id = ${RELEASE_ID} filename = ${FILENAME}""
+        echo "version = ${VERSION} release id = ${RELEASE_ID} filename = ${FILENAME}"
         echo "upload url = ${UPLOAD_URL}"
         echo "auth = ${AUTH_HEADER}"
         echo "test" > $FILENAME
