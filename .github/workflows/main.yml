@@ -11,7 +11,7 @@ jobs:
       run: |
         curl -O https://raw.githubusercontent.com/advancedtelematic/homebrew-otaconnect/master/ota.rb
         RELEASE_URL="https://github.com/advancedtelematic/aktualizr/releases/download/${VERSION}/"
-        brew install --build-bottle ./ota.rb
+        brew install --verbose --build-bottle ./ota.rb
         echo "installed package with bottle"
         ls -lh
         brew bottle --json --no-rebuild --force-core-tap --root-url=${RELEASE_URL} ota
@@ -23,7 +23,7 @@ jobs:
         echo "You should now open a PR at https://github.com/advancedtelematic/homebrew/otaconnect"
         echo "Here's the new recipe. It's also attached to this job as an artifact."
         echo "------------------------------------------------------------------------------------"
-        brew cat aktualizr | tee ota.rb
+        brew cat ota | tee ota.rb
         echo "------------------------------------------------------------------------------------"
         mv ota--0.1.0.mojave.bottle.tar.gz ota-0.1.0.mojave.bottle.tar.gz
     - name: Upload bottle to github release page
