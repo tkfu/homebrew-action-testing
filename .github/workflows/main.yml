@@ -1,4 +1,4 @@
-name: Release upload test 5
+name: Release upload test 6
 on: 
   release:
     types: [created]
@@ -21,6 +21,8 @@ jobs:
       #   brew cat aktualizr > aktualizr.rb
       #   mv aktualizr--${VERSION}.mojave.bottle.tar.gz aktualizr-${VERSION}.mojave.bottle.tar.gz
     - name: Upload bottle to github release page
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
         VERSION=$(basename $GITHUB_REF)
         echo "non export version: ${VERSION}"
