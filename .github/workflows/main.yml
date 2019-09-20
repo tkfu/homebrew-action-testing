@@ -6,6 +6,7 @@ jobs:
   macOS:
     name: Upload a file to release
     runs-on: macOS-10.14
+    steps:
     - name: Attempt to auto-update recipe and build bottle
       run: |
         curl -O https://raw.githubusercontent.com/advancedtelematic/homebrew-otaconnect/master/ota.rb
