@@ -16,7 +16,7 @@ jobs:
         ls -lh
         brew bottle --json --no-rebuild --force-core-tap --root-url=${RELEASE_URL} ota
         ls -lh
-        brew bottle --merge --write --no-commit ./ota--master.mojave.bottle.json
+        brew bottle --merge --write --no-commit ./ota--0.1.0.mojave.bottle.json
         ls -ls
         rm ota.rb
         echo "Bottle and recipe creation succeeded!"
@@ -25,14 +25,14 @@ jobs:
         echo "------------------------------------------------------------------------------------"
         brew cat aktualizr | tee ota.rb
         echo "------------------------------------------------------------------------------------"
-        mv ota--master.mojave.bottle.tar.gz ota-master.mojave.bottle.tar.gz
+        mv ota--0.1.0.mojave.bottle.tar.gz ota-0.1.0.mojave.bottle.tar.gz
     - name: Upload bottle to github release page
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
         RELEASE_ID=$(jq --raw-output '.release.id' $GITHUB_EVENT_PATH)
         AUTH_HEADER="Authorization: token ${GITHUB_TOKEN}"
-        FILENAME=ota-master.mojave.bottle.tar.gz
+        FILENAME=ota-0.1.0.mojave.bottle.tar.gz
         UPLOAD_URL="https://uploads.github.com/repos/${GITHUB_REPOSITORY}/releases/${RELEASE_ID}/assets?name=${FILENAME}"
         curl -sSL -H "${AUTH_HEADER}" -F "data=@${FILENAME}" "$UPLOAD_URL"
     - name: Save recipe as build artifact
