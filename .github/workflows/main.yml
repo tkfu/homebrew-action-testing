@@ -27,12 +27,9 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
+        brew install ghr 
         VERSION=$(basename $GITHUB_REF)
-        RELEASE_ID=$(jq --raw-output '.release.id' $GITHUB_EVENT_PATH)
-        AUTH_HEADER="Authorization: token ${GITHUB_TOKEN}"
-        FILENAME=ota-${VERSION}.mojave.bottle.tar.gz
-        UPLOAD_URL="https://uploads.github.com/repos/${GITHUB_REPOSITORY}/releases/${RELEASE_ID}/assets?name=${FILENAME}"
-        curl --data-binary @"$FILENAME" -H "${AUTH_HEADER}" -H "Content-Type: application/octet-stream" "$UPLOAD_URL"
+        ghr -t ${GITHUB_TOKEN} ${VERSION} ota-${VERSION}.mojave.bottle.tar.gz
     - name: Save recipe as build artifact
       uses: actions/upload-artifact@master
       with:
