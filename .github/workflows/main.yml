@@ -10,7 +10,7 @@ jobs:
     - name: Attempt to auto-update recipe and build bottle
       run: |
         curl -O https://raw.githubusercontent.com/advancedtelematic/homebrew-otaconnect/master/ota.rb
-        VERSION=$(basename $GITHUB_REF)
+        VERSION=${GITHUB_REF#refs/tags/}
         RELEASE_URL="https://github.com/advancedtelematic/ota-cli/releases/download/${VERSION}"
         sed -i '' -E "s/  version \"[0-9]+.[0-9]+.[0-9]+\"/  version \"${VERSION}\"/" ota.rb
         brew install --build-bottle ./ota.rb
@@ -28,8 +28,8 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
         brew install ghr 
-        VERSION=$(basename $GITHUB_REF)
-        ghr -t ${GITHUB_TOKEN} ${VERSION} ota-${VERSION}.mojave.bottle.tar.gz
+        VERSION=${GITHUB_REF#refs/tags/}
+        ghr -u "${GITHUB_REPOSITORY%/*}" -r "${GITHUB_REPOSITORY#*/}" ${VERSION} ota-${VERSION}.mojave.bottle.tar.gz
     - name: Save recipe as build artifact
       uses: actions/upload-artifact@master
       with:
